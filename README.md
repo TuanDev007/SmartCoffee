@@ -15,6 +15,8 @@ Báo cáo giai đoạn 1 môn WEB212 – Phát triển dự án website với AI
 
 SmartCoffee là **phần mềm quản trị quán cà phê và POS gọi món** cho một quán: nhân viên phục vụ gọi món bằng điện thoại, quầy pha chế nhận món theo hàng chờ, thu ngân thanh toán tại bàn và in hóa đơn, chủ quán quản lý món, bàn, nhân viên và xem doanh thu. Đặc tả, Use Case và thiết kế nằm trong báo cáo ở thư mục `docs/`.
 
+Thiết kế giao diện (Figma): https://www.figma.com/design/bOJYKAAD1MK3WMiRdrgjGF/huy
+
 ## Phạm vi hiện tại
 
 - **Phần mềm POS và quản trị:** đã có thiết kế (Figma), ERD và script MySQL `database/smartcoffee_pos.sql`; **chưa được lập trình**.
