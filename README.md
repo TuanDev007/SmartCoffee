@@ -15,7 +15,9 @@ Báo cáo giai đoạn 1 môn WEB212 – Phát triển dự án website với AI
 
 SmartCoffee là bản frontend giới thiệu quán cà phê: intro 3D WebGL, chọn cấu hình đồ uống, giỏ hàng demo cục bộ, trang chủ, giới thiệu, menu, chi tiết đồ uống, blog, liên hệ và giao diện đặt bàn. Website dùng HTML/CSS/JavaScript; Node.js chỉ phục vụ tệp tĩnh để xem thử.
 
-**Chưa có backend PHP MVC/OOP/PDO, MySQL, đăng nhập, phân quyền admin, xử lý đặt bàn/đơn hàng hoặc thanh toán thực.** Thông báo “ORDER CONFIRMED” trong intro là mô phỏng, không phải đơn hàng được lưu trên máy chủ. Phản hồi ở intro dùng `mailto:`; các form Webflow chưa có backend SmartCoffee đi kèm.
+Đã có script cơ sở dữ liệu MySQL `database/smartcoffee.sql` (cấu trúc bảng và dữ liệu mẫu theo ERD trong báo cáo), nhưng website **chưa kết nối** tới database này.
+
+**Chưa có backend PHP MVC/OOP/PDO, đăng nhập, phân quyền admin, xử lý đặt bàn/đơn hàng hoặc thanh toán thực.** Thông báo “ORDER CONFIRMED” trong intro là mô phỏng, không phải đơn hàng được lưu trên máy chủ. Phản hồi ở intro dùng `mailto:`; các form Webflow chưa có backend SmartCoffee đi kèm.
 
 ## Cài đặt và chạy
 
@@ -45,12 +47,28 @@ app/Models/                      Dành cho lớp dữ liệu khi phát triển b
 app/Controllers/                 Dành cho lớp xử lý yêu cầu khi phát triển backend
 public/assets/intro/             Tài nguyên intro 3D
 public/assets/website/                  Tài nguyên tĩnh của website
+database/smartcoffee.sql         Script MySQL: cấu trúc bảng và dữ liệu mẫu
 docs/                           Báo cáo DOCX và PDF
 ```
 
 ## Database và tài khoản demo
 
-- Chưa có database MySQL hay script `.sql` trong phiên bản này.
+### Cơ sở dữ liệu MySQL
+
+File `database/smartcoffee.sql` tạo database `smartcoffee` gồm 7 bảng theo ERD trong báo cáo: `users`, `categories`, `products`, `cafe_tables`, `reservations`, `orders`, `order_items`, kèm dữ liệu mẫu và một số truy vấn kiểm tra ở cuối file. Yêu cầu MySQL 8.0 trở lên (hoặc MariaDB 10.4 trở lên).
+
+Cách nhập bằng XAMPP:
+
+1. Mở XAMPP Control Panel, bật **Apache** và **MySQL**.
+2. Vào `http://localhost/phpmyadmin` → tab **Import** → chọn `database/smartcoffee.sql` → **Go**.
+3. Database `smartcoffee` xuất hiện ở cột bên trái với 7 bảng.
+
+Hoặc dùng dòng lệnh: `mysql -u root -p < database/smartcoffee.sql`
+
+Lưu ý: script bắt đầu bằng `DROP DATABASE IF EXISTS smartcoffee`, nên chạy lại sẽ xóa dữ liệu cũ của database cùng tên.
+
+### Tài khoản demo
+
 - `localStorage` (`your_cafe_cart`, `your_cafe_editor_config`) chỉ lưu trạng thái ở từng trình duyệt, không thay thế database.
 - Khách truy cập không cần đăng nhập. **Chưa có tài khoản admin/khách demo** vì chưa triển khai xác thực.
 - Site Editor của intro chỉ chỉnh cấu hình cục bộ, không phải trang quản trị có phân quyền.
@@ -66,7 +84,7 @@ docs/                           Báo cáo DOCX và PDF
 
 ## Phần cần phát triển tiếp theo yêu cầu môn học
 
-PHP MVC (`app/Models`, `app/Views`, `app/Controllers`, `index.php`, `.htaccess`); PHP class và kế thừa/đóng gói; PDO prepared statements; MySQL/SQL; CRUD thực đơn; đặt bàn và quản trị; tài khoản demo; kiểm thử nghiệp vụ; triển khai hosting có Live URL.
+PHP MVC (`app/Models`, `app/Views`, `app/Controllers`, `index.php`, `.htaccess`); PHP class và kế thừa/đóng gói; PDO prepared statements; kết nối website với database `smartcoffee`; CRUD thực đơn; đặt bàn và quản trị; tài khoản demo; kiểm thử nghiệp vụ; triển khai hosting có Live URL.
 
 Repository GitHub là nơi lưu mã nguồn, **không phải Live URL website**. Sơ đồ ERD/MVC trong báo cáo là thiết kế đề xuất cho giai đoạn tiếp theo, chưa phải phần đã được triển khai.
 
