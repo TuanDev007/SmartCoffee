@@ -1,0 +1,32 @@
+SMARTCOFFEE — BẢN DEMO 3D CHẠY TRÊN MÁY
+
+1. Giải nén toàn bộ ZIP vào một thư mục nếu bạn đang dùng bản nén.
+2. Trên Windows, bấm đúp setup.bat. Trình duyệt sẽ mở địa chỉ cục bộ
+   được in trong cửa sổ. Giữ cửa sổ này mở trong lúc xem.
+3. Chờ nút ENTER EXPERIENCE xuất hiện rồi bấm vào. Cuộn chậm để di chuyển
+   qua quầy, khu trưng bày và thực đơn. Cuộn ngược để quay lại.
+4. Cuộn đến cuối để mở Craft Your Blend, chọn món và các tùy chọn ưng ý,
+   rồi bấm “Vào trang chủ SmartCoffee →” để mở trang chủ SmartCoffee cùng tab.
+   Giữ thư mục public/brunivo cạnh public/Your-Cafe-3D để liên kết hoạt động.
+5. Đóng cửa sổ lệnh hoặc nhấn Ctrl+C để dừng.
+
+Yêu cầu: Node.js và trình duyệt có WebGL, như Chrome hoặc Edge với tăng tốc
+đồ họa. Máy dùng để chuẩn bị bản này đã có Node.js. Không cần npm install.
+Nếu trình duyệt không tự mở, hãy sao chép địa chỉ hiển thị vào thanh địa chỉ.
+Nếu mở trực tiếp index.html bằng file://, trình duyệt có thể chặn mô-đun.
+
+Các tệp web nằm trong site/. index.html chứa nội dung giao diện, assets/
+chứa mã JavaScript, CSS và tài nguyên. JavaScript là bundle đã biên dịch
+của bản demo công khai. Giỏ hàng và đặt món là tương tác trình diễn.
+
+CHỈNH SỬA
+Mở địa chỉ cục bộ được in trong cửa sổ lệnh, thêm ?edit ở cuối địa chỉ
+rồi tải trang. Bấm Site Editor để đổi tên quán, menu, giá, ảnh trưng bày,
+màu sắc và phông chữ. Bấm Save Changes để lưu trong trình duyệt. Dùng lại
+cùng trình duyệt và cổng để thấy các chỉnh sửa. ZIP chứa mẫu ban đầu.
+Form Feedback của demo mở bản nháp trong ứng dụng email với địa chỉ của
+người bán. Checkout hiển thị xác nhận cục bộ và không thu tiền.
+
+Demo của nhà thiết kế: https://website99.com/cafe/
+Trang bán: https://www.etsy.com/listing/4519536361/coffee-shop-website-template-cafe-html
+Gói tải sau mua và giấy phép do người bán cung cấp riêng trên Etsy.

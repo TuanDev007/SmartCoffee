@@ -1,0 +1,25 @@
+SMARTCOFFEE — INTRO 3D + WEBSITE ĐẦY ĐỦ
+
+1. Giải nén toàn bộ file ZIP trước khi chạy.
+2. Bấm đúp setup.bat trong thư mục SmartCoffee-Full-20261113.
+3. Trình duyệt tự mở intro. Bấm ENTER EXPERIENCE, cuộn đến cuối,
+   chọn mẫu đồ uống rồi bấm “Vào trang chủ SmartCoffee →”.
+4. Trang chủ, giới thiệu, menu, chi tiết sản phẩm, blog, liên hệ,
+   đặt bàn và các trang phụ đều nằm trong gói này.
+5. Giữ cửa sổ lệnh mở khi xem. Nhấn Ctrl+C để dừng.
+
+Yêu cầu: Node.js (khuyến nghị bản LTS), trình duyệt hỗ trợ WebGL.
+Không cần npm install. Không mở trực tiếp HTML bằng file://.
+Nếu trình duyệt không tự mở, dùng địa chỉ in trong cửa sổ lệnh.
+Nếu cổng 4178 đã được dùng, chương trình tự chọn một cổng còn trống.
+
+CẤU TRÚC
+setup.bat                    Chạy toàn bộ trải nghiệm
+start-smartcoffee.cjs         Máy chủ cục bộ
+public/Your-Cafe-3D/          Intro 3D SmartCoffee và tài nguyên
+public/brunivo/               Toàn bộ website SmartCoffee và tài nguyên
+
+Trang chủ trực tiếp: thêm /brunivo/index.html sau địa chỉ máy chủ.
+Đây là bản frontend hiện có; giỏ hàng/đặt món ở intro là demo,
+không có backend thanh toán hoặc hệ thống xử lý đặt bàn đi kèm.
+Một số font và dịch vụ/liên kết bên ngoài có thể cần Internet.
