@@ -11,11 +11,18 @@ Báo cáo giai đoạn 1 môn WEB212 – Phát triển dự án website với AI
 | PI02906 | Lầu Gia Huy | 2 |
 | PI02156 | Lê Ngọc Gia Bảo | 2 |
 
+## Đề tài
+
+SmartCoffee là **phần mềm quản trị quán cà phê và POS gọi món** cho một quán: nhân viên phục vụ gọi món bằng điện thoại, quầy pha chế nhận món theo hàng chờ, thu ngân thanh toán tại bàn và in hóa đơn, chủ quán quản lý món, bàn, nhân viên và xem doanh thu. Đặc tả, Use Case và thiết kế nằm trong báo cáo ở thư mục `docs/`.
+
 ## Phạm vi hiện tại
 
-SmartCoffee là bản frontend giới thiệu quán cà phê: intro 3D WebGL, chọn cấu hình đồ uống, giỏ hàng demo cục bộ, trang chủ, giới thiệu, menu, chi tiết đồ uống, blog, liên hệ và giao diện đặt bàn. Website dùng HTML/CSS/JavaScript; Node.js chỉ phục vụ tệp tĩnh để xem thử.
+- **Phần mềm POS và quản trị:** đã có thiết kế (Figma), ERD và script MySQL `database/smartcoffee_pos.sql`; **chưa được lập trình**.
+- **Website giới thiệu quán:** chạy được ở mức frontend, mô tả bên dưới.
 
-Đã có script cơ sở dữ liệu MySQL `database/smartcoffee.sql` (cấu trúc bảng và dữ liệu mẫu theo ERD trong báo cáo), nhưng website **chưa kết nối** tới database này.
+Website giới thiệu là bản frontend: intro 3D WebGL, chọn cấu hình đồ uống, giỏ hàng demo cục bộ, trang chủ, giới thiệu, menu, chi tiết đồ uống, blog, liên hệ và giao diện đặt bàn. Website dùng HTML/CSS/JavaScript; Node.js chỉ phục vụ tệp tĩnh để xem thử.
+
+Website giới thiệu **không kết nối** database.
 
 **Chưa có backend PHP MVC/OOP/PDO, đăng nhập, phân quyền admin, xử lý đặt bàn/đơn hàng hoặc thanh toán thực.** Thông báo “ORDER CONFIRMED” trong intro là mô phỏng, không phải đơn hàng được lưu trên máy chủ. Phản hồi ở intro dùng `mailto:`; các form Webflow chưa có backend SmartCoffee đi kèm.
 
@@ -47,7 +54,7 @@ app/Models/                      Dành cho lớp dữ liệu khi phát triển b
 app/Controllers/                 Dành cho lớp xử lý yêu cầu khi phát triển backend
 public/assets/intro/             Tài nguyên intro 3D
 public/assets/website/                  Tài nguyên tĩnh của website
-database/smartcoffee.sql         Script MySQL: cấu trúc bảng và dữ liệu mẫu
+database/smartcoffee_pos.sql     Script MySQL của phần mềm POS: 9 bảng, dữ liệu mẫu
 docs/                           Báo cáo DOCX và PDF
 ```
 
@@ -55,22 +62,22 @@ docs/                           Báo cáo DOCX và PDF
 
 ### Cơ sở dữ liệu MySQL
 
-File `database/smartcoffee.sql` tạo database `smartcoffee` gồm 7 bảng theo ERD trong báo cáo: `users`, `categories`, `products`, `cafe_tables`, `reservations`, `orders`, `order_items`, kèm dữ liệu mẫu và một số truy vấn kiểm tra ở cuối file. Yêu cầu MySQL 8.0 trở lên (hoặc MariaDB 10.4 trở lên).
+File `database/smartcoffee_pos.sql` tạo database `smartcoffee_pos` gồm 9 bảng theo ERD trong báo cáo: `store_settings`, `users`, `categories`, `products`, `dining_tables`, `orders`, `order_items`, `payments`, `invoices`, kèm dữ liệu mẫu và 6 truy vấn mẫu ở cuối file (sơ đồ bàn, hàng chờ quầy pha chế, chuyển bàn, đối chiếu tổng tiền, doanh thu theo ngày, dữ liệu in hóa đơn). Yêu cầu MySQL 8.0 trở lên hoặc MariaDB 10.4 trở lên.
 
 Cách nhập bằng XAMPP:
 
 1. Mở XAMPP Control Panel, bật **Apache** và **MySQL**.
-2. Vào `http://localhost/phpmyadmin` → tab **Import** → chọn `database/smartcoffee.sql` → **Go**.
-3. Database `smartcoffee` xuất hiện ở cột bên trái với 7 bảng.
+2. Vào `http://localhost/phpmyadmin` → tab **Import** → chọn `database/smartcoffee_pos.sql` → **Go**.
+3. Database `smartcoffee_pos` xuất hiện ở cột bên trái với 9 bảng.
 
-Hoặc dùng dòng lệnh: `mysql -u root -p < database/smartcoffee.sql`
+Hoặc dùng dòng lệnh: `mysql -u root -p < database/smartcoffee_pos.sql`
 
-Lưu ý: script bắt đầu bằng `DROP DATABASE IF EXISTS smartcoffee`, nên chạy lại sẽ xóa dữ liệu cũ của database cùng tên.
+Lưu ý: script bắt đầu bằng `DROP DATABASE IF EXISTS smartcoffee_pos`, nên chạy lại sẽ xóa dữ liệu cũ của database cùng tên.
 
 ### Tài khoản demo
 
 - `localStorage` (`your_cafe_cart`, `your_cafe_editor_config`) chỉ lưu trạng thái ở từng trình duyệt, không thay thế database.
-- Khách truy cập không cần đăng nhập. **Chưa có tài khoản admin/khách demo** vì chưa triển khai xác thực.
+- **Chưa có tài khoản demo** vì phần mềm chưa lập trình đăng nhập. Script SQL có sẵn tài khoản mẫu cho 5 vai trò (`admin`, `quanly`, `thungan`, `phucvu`, `phache`) để dùng khi có phần mềm.
 - Site Editor của intro chỉ chỉnh cấu hình cục bộ, không phải trang quản trị có phân quyền.
 
 ## Kiểm tra ngày 13/11/2026
