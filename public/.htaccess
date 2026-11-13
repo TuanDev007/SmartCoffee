@@ -1,0 +1,5 @@
+DirectoryIndex index.php
+RewriteEngine On
+RewriteRule ^(?:brunivo/?)?$ index.php [END]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [END]

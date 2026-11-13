@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><base href="/Your-Cafe-3D/Your-Cafe-3D/site/">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SMARTCOFFEE — Immersive 3D Experience</title>
@@ -200,7 +200,7 @@
       </div>
     </div>
 
-    <button id="btn-studio-add" class="cta-button" data-home-url="../../../brunivo/index.html">Vào trang chủ SmartCoffee →</button>
+    <button id="btn-studio-add" class="cta-button" data-home-url="/brunivo/index.html">Vào trang chủ SmartCoffee →</button>
   </div>
 
   <!-- Success Message Modal -->
