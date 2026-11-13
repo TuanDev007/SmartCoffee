@@ -1,0 +1,1 @@
+require('../../start-smartcoffee.cjs');

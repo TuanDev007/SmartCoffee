@@ -3,8 +3,8 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { spawn } = require('node:child_process');
 
-const root = path.join(__dirname, 'public/Your-Cafe-3D/Your-Cafe-3D/site');
-const brunivoRoot = path.join(__dirname, 'public/brunivo');
+const introAssets = path.join(__dirname, 'public/assets/intro');
+const websiteAssets = path.join(__dirname, 'public/assets/website');
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript', '.json': 'application/json',
@@ -28,10 +28,20 @@ const server = http.createServer((req, res) => {
     res.writeHead(400).end();
     return;
   }
+  if (pathname === '/Your-Cafe-3D/index.html') pathname = '/redirect.html';
   const isSmartCoffee = pathname === '/brunivo' || pathname.startsWith('/brunivo/');
-  const servedRoot = isSmartCoffee ? brunivoRoot : root;
+
   let relativePath = isSmartCoffee ? pathname.slice('/brunivo'.length) : pathname;
   if (!relativePath || relativePath.endsWith('/')) relativePath += 'index.html';
+  const isView = relativePath.toLowerCase().endsWith('.html');
+  const servedRoot = isView
+    ? path.join(__dirname, 'app/Views', isSmartCoffee ? 'brunivo' : 'intro')
+    : (isSmartCoffee ? websiteAssets : introAssets);
+  if (!isView) {
+    if (relativePath.startsWith('/assets/')) relativePath = relativePath.slice('/assets'.length);
+    else if (!isSmartCoffee && /^\/[\w-]+\.(jpg|png)$/.test(relativePath)) relativePath = '/images' + relativePath;
+    else { res.writeHead(404).end(); return; }
+  }
   const file = path.resolve(servedRoot, '.' + relativePath);
   if (!file.startsWith(servedRoot + path.sep)) {
     res.writeHead(403).end();
@@ -66,3 +76,5 @@ server.listen(4178, '127.0.0.1', () => {
     browser.unref();
   }
 });
+
+

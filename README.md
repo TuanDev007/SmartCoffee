@@ -39,8 +39,12 @@ Không cần `npm install`. Không mở HTML bằng `file://`. Intro cần trìn
 setup.bat                       Khởi chạy trên Windows
 start-smartcoffee.cjs            HTTP server tĩnh chỉ GET và HEAD
 HUONG-DAN.txt                    Hướng dẫn gốc
-public/Your-Cafe-3D/             Intro 3D và bundle JavaScript/CSS
-public/brunivo/                  Website nhiều trang và tài nguyên
+app/Views/intro/                 Trang HTML của intro 3D
+app/Views/brunivo/               Các trang HTML của website
+app/Models/                      Dành cho lớp dữ liệu khi phát triển backend
+app/Controllers/                 Dành cho lớp xử lý yêu cầu khi phát triển backend
+public/assets/intro/             Tài nguyên intro 3D
+public/assets/website/                  Tài nguyên tĩnh của website
 docs/                           Báo cáo DOCX và PDF
 ```
 
@@ -68,4 +72,6 @@ Repository GitHub là nơi lưu mã nguồn, **không phải Live URL website**.
 
 ## Nguồn giao diện
 
-Gói frontend hiện có chứa intro Your-Cafe-3D và giao diện Brunivo/Webflow được tùy chỉnh tên SmartCoffee. Giữ nguyên thông tin tác giả và trang `public/brunivo/template-info/licenses.html`; các thư viện và tài nguyên bên thứ ba tuân theo điều kiện của chủ sở hữu. Không xem toàn bộ tài nguyên mẫu là mã do nhóm tự viết.
+Gói frontend hiện có chứa intro Your-Cafe-3D và giao diện Brunivo/Webflow được tùy chỉnh tên SmartCoffee. Giữ nguyên thông tin tác giả và trang `app/Views/brunivo/template-info/licenses.html`; các thư viện và tài nguyên bên thứ ba tuân theo điều kiện của chủ sở hữu. Không xem toàn bộ tài nguyên mẫu là mã do nhóm tự viết.
+
+
