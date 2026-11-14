@@ -26,10 +26,11 @@ CREATE TABLE store_settings (
 -- 2. NHÂN VIÊN
 -- ---------------------------------------------------------------------
 -- role quyết định nhân viên được làm gì:
---   admin    : toàn quyền, quản lý tài khoản
---   manager  : quản lý món, bàn, xem báo cáo
+--   admin    : chỉ quản lý hệ thống (tài khoản, cài đặt); KHÔNG bán hàng, KHÔNG hủy đơn
+--   manager  : chủ quán; làm được mọi việc bán hàng, quản lý món, bàn, xem báo cáo,
+--              và là người DUY NHẤT hủy món/đơn đã gửi quầy pha chế
 --   cashier  : thanh toán, in hóa đơn
---   waiter   : mở đơn, gọi món, chuyển bàn
+--   waiter   : mở đơn, gọi món, gửi món, chuyển bàn; chỉ tự hủy được món/đơn còn là nháp
 --   barista  : xem hàng chờ ở quầy, đổi trạng thái món
 CREATE TABLE users (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -81,6 +82,11 @@ CREATE TABLE dining_tables (
 -- ---------------------------------------------------------------------
 -- 5. ĐƠN GỌI MÓN
 -- ---------------------------------------------------------------------
+-- Hủy đơn: đơn chỉ có món nháp thì waiter hủy được; đơn đã có món gửi quầy thì chỉ
+-- manager hủy và phải nhập cancel_reason (ứng dụng kiểm tra, cơ sở dữ liệu chỉ bắt buộc
+-- cancelled_by). Đơn đã thanh toán (paid) không hủy trong hệ thống.
+-- subtotal chỉ cộng các món ĐÃ GỬI quầy và chưa hủy (món nháp chưa tính). Mỗi lần
+-- bấm "Gửi món" hoặc hủy món, ứng dụng tính lại subtotal.
 -- Một đơn = một lượt khách. Chuyển bàn = đổi table_id của đơn đang mở.
 -- Đơn tại bàn bắt buộc có bàn; đơn mang đi không có bàn.
 -- open_table_id: cột tự tính, chỉ có giá trị khi đơn đang mở. Gắn UNIQUE vào cột này
@@ -98,9 +104,13 @@ CREATE TABLE orders (
     discount        INT UNSIGNED NOT NULL DEFAULT 0,
     total           INT UNSIGNED NOT NULL DEFAULT 0,
     note            VARCHAR(255) NULL,
+    cancelled_by    INT UNSIGNED NULL,
+    cancel_reason   VARCHAR(255) NULL,
     open_table_id   INT UNSIGNED AS (CASE WHEN status = 'open' THEN table_id ELSE NULL END) STORED,
     CONSTRAINT fk_orders_table     FOREIGN KEY (table_id)  REFERENCES dining_tables(id),
     CONSTRAINT fk_orders_opened_by FOREIGN KEY (opened_by) REFERENCES users(id),
+    CONSTRAINT fk_orders_cancelled_by FOREIGN KEY (cancelled_by) REFERENCES users(id),
+    CONSTRAINT ck_orders_cancel    CHECK (status <> 'cancelled' OR cancelled_by IS NOT NULL),
     CONSTRAINT ck_orders_table     CHECK (order_type = 'takeaway' OR table_id IS NOT NULL),
     CONSTRAINT ck_orders_total     CHECK (discount <= subtotal AND total + discount = subtotal),
     UNIQUE KEY uq_orders_open_table (open_table_id),
@@ -111,9 +121,12 @@ CREATE TABLE orders (
 -- để quầy pha chế thấy đó là món mới cần làm.
 -- unit_price: giá TẠI LÚC GỌI (đổi giá món sau này không làm sai đơn cũ).
 -- note: yêu cầu riêng như ít đá, ít đường, size L.
--- status: vòng đời của món ở quầy
---   pending (chờ) -> preparing (đang pha) -> ready (xong) -> served (đã mang ra)
---   cancelled: hủy món (không tính tiền)
+-- status: vòng đời của món
+--   draft (nháp, chưa gửi quầy; waiter còn sửa, xóa được; quầy pha chế chưa thấy)
+--     -> bấm "Gửi món" -> pending (chờ) -> preparing (đang pha) -> ready (xong)
+--     -> served (đã mang ra)
+--   cancelled: hủy món ĐÃ GỬI (không tính tiền). Chỉ manager hủy, bắt buộc có
+--     cancelled_by và cancel_reason. Món nháp thì xóa hẳn dòng, không cần lưu vết.
 CREATE TABLE order_items (
     id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     order_id      INT UNSIGNED NOT NULL,
@@ -121,13 +134,17 @@ CREATE TABLE order_items (
     quantity      SMALLINT UNSIGNED NOT NULL CHECK (quantity > 0),
     unit_price    INT UNSIGNED NOT NULL,
     note          VARCHAR(255) NULL,
-    status        ENUM('pending', 'preparing', 'ready', 'served', 'cancelled') NOT NULL DEFAULT 'pending',
+    status        ENUM('draft', 'pending', 'preparing', 'ready', 'served', 'cancelled') NOT NULL DEFAULT 'draft',
+    cancelled_by  INT UNSIGNED NULL,
+    cancel_reason VARCHAR(255) NULL,
     created_by    INT UNSIGNED NOT NULL,
     created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_items_order      FOREIGN KEY (order_id)   REFERENCES orders(id) ON DELETE CASCADE,
     CONSTRAINT fk_items_product    FOREIGN KEY (product_id) REFERENCES products(id),
     CONSTRAINT fk_items_created_by FOREIGN KEY (created_by) REFERENCES users(id),
+    CONSTRAINT fk_items_cancelled_by FOREIGN KEY (cancelled_by) REFERENCES users(id),
+    CONSTRAINT ck_items_cancel     CHECK (status <> 'cancelled' OR (cancelled_by IS NOT NULL AND cancel_reason IS NOT NULL)),
     INDEX idx_items_queue (status, created_at)
 ) ENGINE = InnoDB;
 
@@ -207,30 +224,31 @@ INSERT INTO dining_tables (code, area, capacity) VALUES
 ('L03', 'Lầu 1', 8);      -- id 8
 
 -- Đơn 1: bàn B02, đã thanh toán và in hóa đơn (in lại 1 lần)
--- Đơn 2: bàn B04, đang phục vụ, có món ở nhiều trạng thái khác nhau
+-- Đơn 2: bàn B04, đang phục vụ, có món ở nhiều trạng thái khác nhau (kể cả 1 món nháp)
 -- Đơn 3: mang đi, đã thanh toán bằng chuyển khoản
--- Đơn 4: bàn L01, khách bỏ về nên hủy
-INSERT INTO orders (code, order_type, table_id, status, opened_by, opened_at, closed_at, subtotal, discount, total) VALUES
-('DH-20261114-001', 'dine_in',  2,    'paid',      4, '2026-11-14 08:05:00', '2026-11-14 09:10:00', 128000, 8000, 120000),
-('DH-20261114-002', 'dine_in',  4,    'open',      4, '2026-11-14 09:30:00', NULL,                  138000,    0, 138000),
-('DH-20261114-003', 'takeaway', NULL, 'paid',      3, '2026-11-14 09:40:00', '2026-11-14 09:45:00',  58000,    0,  58000),
-('DH-20261114-004', 'dine_in',  6,    'cancelled', 4, '2026-11-14 10:00:00', '2026-11-14 10:05:00',      0,    0,      0);
+-- Đơn 4: bàn L01, khách bỏ về nên manager hủy (id 2)
+INSERT INTO orders (code, order_type, table_id, status, opened_by, opened_at, closed_at, subtotal, discount, total, cancelled_by, cancel_reason) VALUES
+('DH-20261114-001', 'dine_in',  2,    'paid',      4, '2026-11-14 08:05:00', '2026-11-14 09:10:00', 128000, 8000, 120000, NULL, NULL),
+('DH-20261114-002', 'dine_in',  4,    'open',      4, '2026-11-14 09:30:00', NULL,                  138000,    0, 138000, NULL, NULL),
+('DH-20261114-003', 'takeaway', NULL, 'paid',      3, '2026-11-14 09:40:00', '2026-11-14 09:45:00',  58000,    0,  58000, NULL, NULL),
+('DH-20261114-004', 'dine_in',  6,    'cancelled', 4, '2026-11-14 10:00:00', '2026-11-14 10:05:00',      0,    0,      0, 2,    'Khách bỏ về');
 
-INSERT INTO order_items (order_id, product_id, quantity, unit_price, note, status, created_by, created_at) VALUES
+INSERT INTO order_items (order_id, product_id, quantity, unit_price, note, status, created_by, created_at, cancelled_by, cancel_reason) VALUES
 -- Đơn 1: 2×29.000 + 35.000 + 35.000 = 128.000 (cà phê đen đã hủy, không tính); giảm 8.000 -> 120.000
-(1, 2, 2, 29000, NULL,            'served', 4, '2026-11-14 08:06:00'),
-(1, 4, 1, 35000, 'ít ngọt',       'served', 4, '2026-11-14 08:06:00'),
-(1, 6, 1, 35000, NULL,            'served', 4, '2026-11-14 08:20:00'),
-(1, 1, 1, 25000, NULL,            'cancelled', 4, '2026-11-14 08:21:00'),
--- Đơn 2: món đã mang ra, món đang pha, món vừa gọi thêm; 2×32.000 + 39.000 + 35.000 = 138.000
-(2, 3, 2, 32000, NULL,            'served',    4, '2026-11-14 09:31:00'),
-(2, 5, 1, 39000, 'ít đá',         'preparing', 4, '2026-11-14 09:31:00'),
-(2, 4, 1, 35000, NULL,            'pending',   4, '2026-11-14 09:50:00'),
-(2, 7, 1, 35000, 'không đường',   'cancelled', 4, '2026-11-14 09:52:00'),
+(1, 2, 2, 29000, NULL,            'served', 4, '2026-11-14 08:06:00', NULL, NULL),
+(1, 4, 1, 35000, 'ít ngọt',       'served', 4, '2026-11-14 08:06:00', NULL, NULL),
+(1, 6, 1, 35000, NULL,            'served', 4, '2026-11-14 08:20:00', NULL, NULL),
+(1, 1, 1, 25000, NULL,            'cancelled', 4, '2026-11-14 08:21:00', 2, 'Khách đổi món'),
+-- Đơn 2: món đã mang ra, món đang pha, món vừa gửi, 1 món nháp (chưa tính tiền); 2×32.000 + 39.000 + 35.000 = 138.000
+(2, 3, 2, 32000, NULL,            'served',    4, '2026-11-14 09:31:00', NULL, NULL),
+(2, 5, 1, 39000, 'ít đá',         'preparing', 4, '2026-11-14 09:31:00', NULL, NULL),
+(2, 4, 1, 35000, NULL,            'pending',   4, '2026-11-14 09:50:00', NULL, NULL),
+(2, 7, 1, 35000, 'không đường',   'cancelled', 4, '2026-11-14 09:52:00', 2, 'Khách không muốn gọi nữa'),
+(2, 1, 1, 25000, 'ít đường',      'draft',     4, '2026-11-14 10:20:00', NULL, NULL),
 -- Đơn 3: mang đi
-(3, 2, 2, 29000, NULL,            'served', 3, '2026-11-14 09:40:00'),
+(3, 2, 2, 29000, NULL,            'served', 3, '2026-11-14 09:40:00', NULL, NULL),
 -- Đơn 4: hủy cả đơn
-(4, 1, 1, 25000, NULL,            'cancelled', 4, '2026-11-14 10:00:00');
+(4, 1, 1, 25000, NULL,            'cancelled', 4, '2026-11-14 10:00:00', 2, 'Khách bỏ về');
 
 INSERT INTO payments (order_id, method, amount, received_amount, cashier_id, paid_at) VALUES
 (1, 'cash',     100000, 100000, 3, '2026-11-14 09:10:00'),
@@ -267,10 +285,10 @@ INSERT INTO invoices (order_id, invoice_no, total, issued_by, issued_at, print_c
 --    Nếu bàn mới đang có đơn mở, ràng buộc uq_orders_open_table sẽ báo lỗi.
 -- UPDATE orders SET table_id = 5 WHERE table_id = 4 AND status = 'open';
 
--- 4. Kiểm tra tổng tiền đơn khớp với các món chưa hủy (kết quả rỗng là khớp)
+-- 4. Kiểm tra tổng tiền đơn khớp với các món đã gửi, chưa hủy (kết quả rỗng là khớp)
 -- SELECT o.code, o.subtotal, COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS tinh_lai
 -- FROM orders o
--- LEFT JOIN order_items oi ON oi.order_id = o.id AND oi.status <> 'cancelled'
+-- LEFT JOIN order_items oi ON oi.order_id = o.id AND oi.status NOT IN ('draft', 'cancelled')
 -- WHERE o.status <> 'cancelled'
 -- GROUP BY o.id, o.code, o.subtotal
 -- HAVING o.subtotal <> COALESCE(SUM(oi.quantity * oi.unit_price), 0);
@@ -288,8 +306,20 @@ INSERT INTO invoices (order_id, invoice_no, total, issued_by, issued_at, print_c
 --        o.subtotal, o.discount, o.total, s.bill_footer
 -- FROM invoices i
 -- JOIN orders o       ON o.id = i.order_id
--- JOIN order_items oi ON oi.order_id = o.id AND oi.status <> 'cancelled'
+-- JOIN order_items oi ON oi.order_id = o.id AND oi.status NOT IN ('draft', 'cancelled')
 -- JOIN products p     ON p.id = oi.product_id
 -- LEFT JOIN dining_tables t ON t.id = o.table_id
 -- CROSS JOIN store_settings s
 -- WHERE o.id = 1;
+
+-- 7. Gửi món: đẩy các món nháp của đơn 2 tới quầy pha chế
+--    (sau đó ứng dụng tính lại subtotal của đơn)
+-- UPDATE order_items SET status = 'pending' WHERE order_id = 2 AND status = 'draft';
+
+-- 8. Waiter hủy món nháp: xóa hẳn dòng, chỉ xóa được món còn nháp
+-- DELETE FROM order_items WHERE id = 9 AND status = 'draft';
+
+-- 9. Manager hủy món đã gửi: bắt buộc có người hủy và lý do (thiếu là báo lỗi CHECK)
+-- UPDATE order_items
+-- SET status = 'cancelled', cancelled_by = 2, cancel_reason = 'Pha sai món'
+-- WHERE id = 7 AND status IN ('pending', 'preparing', 'ready', 'served');
