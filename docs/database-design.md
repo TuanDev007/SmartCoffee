@@ -1,7 +1,7 @@
 # Thiết kế database SmartCoffee (luồng thanh toán trước, pha sau)
 
 > **Trạng thái: ĐỀ XUẤT, CHỜ PM DUYỆT.** Chưa viết SQL. Chỉ Hùng được duyệt thay đổi schema (D-22).
-> Phiên bản 0.1, ngày 17/11/2026. Thay cho `database/smartcoffee_pos.sql` (thiết kế cho luồng cũ, D-23).
+> Phiên bản 0.1, ngày 17/11/2026. Thay cho `database/smartcoffee_pos.sql` (thiết kế cho luồng cũ, D-23; đã xóa khỏi `main` ngày 17/11). Script: [`database/smartcoffee_v2.sql`](../database/smartcoffee_v2.sql).
 
 Ký hiệu nguồn ở mỗi mục:
 - **[D-xx]**: quyết định PM đã chốt trong `docs/business-rules.md`.

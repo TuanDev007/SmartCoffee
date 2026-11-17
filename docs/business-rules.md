@@ -90,7 +90,7 @@ Bản đặc tả chức năng đầy đủ và tiến độ: [dac-ta-chuc-nang-
 
 ## 3. Nội dung CHỜ PM DUYỆT (hiện trạng hoặc đề xuất, chưa phải quy tắc)
 
-Các điểm dưới đây đang có trong SQL, mô tả task hoặc báo cáo nhóm, chưa có quyết định riêng của PM. Ký hiệu nguồn: `SQL` = `database/smartcoffee_pos.sql`; `SC-4` = mô tả task Jira SC-4; `BC` = báo cáo `docs/Bao-cao-SmartCoffee-Nhom-2.docx`. SQL, SC-4 và báo cáo được viết cho luồng cũ.
+Các điểm dưới đây đang có trong SQL, mô tả task hoặc báo cáo nhóm, chưa có quyết định riêng của PM. Ký hiệu nguồn: `SQL` = `database/smartcoffee_pos.sql` (bản cũ, đã xóa khỏi `main` ngày 17/11, còn trong lịch sử git); `SC-4` = mô tả task Jira SC-4; `BC` = báo cáo `docs/Bao-cao-SmartCoffee-Nhom-2.docx`. SQL, SC-4 và báo cáo được viết cho luồng cũ.
 
 - P-01. Quyền chi tiết còn lại: pha chế xem hàng chờ và đổi trạng thái món; phục vụ xác nhận "Đã mang ra"; manager quản lý món, bàn và xem báo cáo (SQL, SC-4, BC).
 - P-02. Không có đăng ký; admin tạo tài khoản cho nhân viên (SC-4, BC FR04).
@@ -115,7 +115,7 @@ Q-11 đã được PM chốt ngày 17/11 (D-62). Hiện không còn câu hỏi m
 
 ## 5. Tài liệu và sản phẩm cần đồng bộ theo luồng mới (không tự sửa nghiệp vụ)
 
-- **`database/smartcoffee_pos.sql`:** viết cho luồng cũ. Chưa có ca làm, voucher, trạng thái bàn lưu riêng, nhãn đổi món, khoản hoàn hoặc thu thêm, người thu tiền; còn trạng thái nháp, phương thức thẻ, cột giảm giá nhập tay, ràng buộc mỗi bàn một đơn đang mở. Thay đổi schema phải được PM phê duyệt.
+- **`database/smartcoffee_pos.sql`:** đã thay bằng `database/smartcoffee_v2.sql` ngày 17/11 và xóa khỏi `main`. Ghi chú cũ: viết cho luồng cũ. Chưa có ca làm, voucher, trạng thái bàn lưu riêng, nhãn đổi món, khoản hoàn hoặc thu thêm, người thu tiền; còn trạng thái nháp, phương thức thẻ, cột giảm giá nhập tay, ràng buộc mỗi bàn một đơn đang mở. Thay đổi schema phải được PM phê duyệt.
 - **Wireframe POS v1 và mô tả SC-4:** theo luồng cũ. Task thay thế: SC-5.
 - **`docs/04-api.md`:** bản nháp chưa phê duyệt, theo luồng cũ. Xem [api-contract.md](api-contract.md).
 - **Báo cáo `.docx` và `.pdf`:** FR06, FR07, FR09, FR10 theo luồng cũ.

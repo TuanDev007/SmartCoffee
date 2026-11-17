@@ -10,7 +10,7 @@ Thiết kế giao diện (Figma): https://www.figma.com/design/bOJYKAAD1MK3WMiRd
 
 | Phần | Trạng thái |
 |---|---|
-| Cơ sở dữ liệu (`database/smartcoffee_pos.sql`) | Đã có script, 9 bảng, dữ liệu mẫu, 9 truy vấn mẫu |
+| Cơ sở dữ liệu (`database/smartcoffee_v2.sql`) | Đã có script 13 bảng theo luồng thanh toán trước, pha sau; chưa chạy thử |
 | Backend (`backend/`) | Chưa lập trình |
 | Frontend (`frontend/`) | Đang thiết kế wireframe, chưa lập trình |
 | Báo cáo (`docs/`) | Bản giai đoạn 1, đang cập nhật |
@@ -54,12 +54,12 @@ Mỗi người làm trong thư mục của mình để ít đụng file nhau.
 
 ## Cơ sở dữ liệu
 
-`database/smartcoffee_pos.sql` tạo database `smartcoffee_pos`: `store_settings`, `users`, `categories`, `products`, `dining_tables`, `orders`, `order_items`, `payments`, `invoices`. Yêu cầu MySQL 8.0+ hoặc MariaDB 10.4+ (XAMPP).
+`database/smartcoffee_v2.sql` tạo database `smartcoffee_v2` gồm 13 bảng, thiết kế ở [docs/database-design.md](docs/database-design.md). Yêu cầu MariaDB 10.4+ (XAMPP).
 
 1. Mở XAMPP, bật **Apache** và **MySQL**.
 2. Vào `http://localhost/phpmyadmin`, tab **Import**, chọn file SQL, bấm **Go**.
 
-Script bắt đầu bằng `DROP DATABASE IF EXISTS smartcoffee_pos`, chạy lại sẽ xóa dữ liệu cũ. Có sẵn tài khoản mẫu cho các vai trò (`admin`, `quanly`, `thungan`, `phucvu`, `phache`).
+Script bắt đầu bằng `DROP DATABASE IF EXISTS smartcoffee_v2`, chạy lại sẽ xóa dữ liệu cũ. Tài khoản mẫu: `admin`, `quanly.01`, `thungan.01`, `phucvu.01`, `phache.01`, mật khẩu `123456` (chỉ dùng khi phát triển).
 
 ## Làm việc nhóm
 

@@ -34,141 +34,16 @@ Tài liệu tách ba loại: **đã phê duyệt** (hiện gần như chưa có,
 - Không ai tự đổi database schema hiện có (mục 3) khi chưa được Hùng phê duyệt.
 - Tên trường và kiểu dữ liệu dùng giữa frontend và backend: **Chưa được đặc tả** (phụ thuộc mục 1).
 
-## 3. Database schema hiện có trong SQL (hiện trạng, CHƯA phải hợp đồng dữ liệu được phê duyệt)
+## 3. Database schema
 
-**Hợp đồng dữ liệu được phê duyệt: chưa có.** Hùng chưa phê duyệt chính thức schema nào làm hợp đồng.
+- Thiết kế: [docs/database-design.md](database-design.md), phiên bản 0.1. PM cho viết SQL ngày 17/11/2026.
+- Script: [`database/smartcoffee_v2.sql`](../database/smartcoffee_v2.sql), database `smartcoffee_v2`, 13 bảng. **Chưa chạy thử trên MariaDB.**
+- Bản cũ `database/smartcoffee_pos.sql` (luồng cũ) đã xóa khỏi `main` ngày 17/11, còn trong lịch sử git.
+- Thay đổi schema vẫn phải theo mục 5.
 
-Phần dưới đây chỉ **mô tả hiện trạng** của [`database/smartcoffee_pos.sql`](../database/smartcoffee_pos.sql) (MySQL 8.0+ hoặc MariaDB 10.4+, utf8mb4), trích tự động từ các lệnh `CREATE TABLE` để tra cứu. Mâu thuẫn giữa bảng dưới và file SQL thì file SQL là hiện trạng đúng. Việc schema này tồn tại không có nghĩa là nó đã được phê duyệt; thay đổi nó vẫn phải theo mục 5.
+## 4. Giá trị liệt kê
 
-Ghi nhận từ hiện trạng: tiền lưu bằng số nguyên; không có cột số lượng khách; không có cột trạng thái bàn (suy ra từ đơn đang mở). Tên bảng, cột, giá trị liệt kê và chú thích trong SQL **không dùng để suy ra nghiệp vụ đã chốt**; nghiệp vụ đã chốt chỉ nằm ở [business-rules.md](business-rules.md), mục 1, 2 và 6.
-
-### `store_settings`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `TINYINT UNSIGNED` | PRIMARY KEY CHECK (id = 1) |
-| `store_name` | `VARCHAR(150)` | NOT NULL |
-| `address` | `VARCHAR(255)` | NOT NULL |
-| `phone` | `VARCHAR(20)` | NOT NULL |
-| `wifi_info` | `VARCHAR(100)` | NULL |
-| `bill_footer` | `VARCHAR(255)` | NULL |
-
-### `users`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `full_name` | `VARCHAR(100)` | NOT NULL |
-| `phone` | `VARCHAR(20)` | NULL |
-| `username` | `VARCHAR(50)` | NOT NULL UNIQUE |
-| `password_hash` | `VARCHAR(255)` | NOT NULL |
-| `role` | `ENUM('admin', 'manager', 'cashier', 'waiter', 'barista')` | NOT NULL |
-| `is_active` | `BOOLEAN` | NOT NULL DEFAULT TRUE |
-| `created_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP |
-
-### `categories`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `name` | `VARCHAR(100)` | NOT NULL UNIQUE |
-| `sort_order` | `SMALLINT` | NOT NULL DEFAULT 0 |
-| `is_active` | `BOOLEAN` | NOT NULL DEFAULT TRUE |
-
-### `products`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `category_id` | `INT UNSIGNED` | NOT NULL |
-| `name` | `VARCHAR(150)` | NOT NULL |
-| `price` | `INT UNSIGNED` | NOT NULL CHECK (price > 0) |
-| `image` | `VARCHAR(255)` | NULL |
-| `is_available` | `BOOLEAN` | NOT NULL DEFAULT TRUE |
-| `is_active` | `BOOLEAN` | NOT NULL DEFAULT TRUE |
-
-### `dining_tables`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `code` | `VARCHAR(10)` | NOT NULL UNIQUE |
-| `area` | `VARCHAR(50)` | NOT NULL |
-| `capacity` | `TINYINT UNSIGNED` | NOT NULL CHECK (capacity > 0) |
-| `is_active` | `BOOLEAN` | NOT NULL DEFAULT TRUE |
-
-### `orders`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `code` | `VARCHAR(20)` | NOT NULL UNIQUE |
-| `order_type` | `ENUM('dine_in', 'takeaway')` | NOT NULL DEFAULT 'dine_in' |
-| `table_id` | `INT UNSIGNED` | NULL |
-| `status` | `ENUM('open', 'paid', 'cancelled')` | NOT NULL DEFAULT 'open' |
-| `opened_by` | `INT UNSIGNED` | NOT NULL |
-| `opened_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP |
-| `closed_at` | `DATETIME` | NULL |
-| `subtotal` | `INT UNSIGNED` | NOT NULL DEFAULT 0 |
-| `discount` | `INT UNSIGNED` | NOT NULL DEFAULT 0 |
-| `total` | `INT UNSIGNED` | NOT NULL DEFAULT 0 |
-| `note` | `VARCHAR(255)` | NULL |
-| `cancelled_by` | `INT UNSIGNED` | NULL |
-| `cancel_reason` | `VARCHAR(255)` | NULL |
-| `open_table_id` | `INT UNSIGNED` | AS (CASE WHEN status = 'open' THEN table_id ELSE NULL END) STORED |
-
-### `order_items`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `order_id` | `INT UNSIGNED` | NOT NULL |
-| `product_id` | `INT UNSIGNED` | NOT NULL |
-| `quantity` | `SMALLINT UNSIGNED` | NOT NULL CHECK (quantity > 0) |
-| `unit_price` | `INT UNSIGNED` | NOT NULL |
-| `note` | `VARCHAR(255)` | NULL |
-| `status` | `ENUM('draft', 'pending', 'preparing', 'ready', 'served', 'cancelled')` | NOT NULL DEFAULT 'draft' |
-| `cancelled_by` | `INT UNSIGNED` | NULL |
-| `cancel_reason` | `VARCHAR(255)` | NULL |
-| `created_by` | `INT UNSIGNED` | NOT NULL |
-| `created_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP |
-| `updated_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
-
-### `payments`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `order_id` | `INT UNSIGNED` | NOT NULL |
-| `method` | `ENUM('cash', 'transfer', 'card')` | NOT NULL |
-| `amount` | `INT UNSIGNED` | NOT NULL CHECK (amount > 0) |
-| `received_amount` | `INT UNSIGNED` | NULL |
-| `cashier_id` | `INT UNSIGNED` | NOT NULL |
-| `paid_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP |
-
-### `invoices`
-
-| Cột | Kiểu | Ràng buộc |
-|---|---|---|
-| `id` | `INT UNSIGNED` | AUTO_INCREMENT PRIMARY KEY |
-| `order_id` | `INT UNSIGNED` | NOT NULL UNIQUE |
-| `invoice_no` | `VARCHAR(20)` | NOT NULL UNIQUE |
-| `total` | `INT UNSIGNED` | NOT NULL |
-| `issued_by` | `INT UNSIGNED` | NOT NULL |
-| `issued_at` | `DATETIME` | NOT NULL DEFAULT CURRENT_TIMESTAMP |
-| `print_count` | `SMALLINT UNSIGNED` | NOT NULL DEFAULT 1 |
-
-Ràng buộc ở mức bảng (khóa ngoại, `CHECK`, `UNIQUE`, chỉ mục) xem trong file SQL. Hiện trạng đáng chú ý: `orders.open_table_id` là cột tự tính để mỗi bàn chỉ có một đơn đang mở; đơn và món ở trạng thái hủy bắt buộc có `cancelled_by`; món bị hủy bắt buộc có `cancel_reason`, còn đơn bị hủy thì SQL không bắt buộc `cancel_reason`.
-
-## 4. Giá trị liệt kê hiện có trong SQL (hiện trạng)
-
-| Trường | Giá trị |
-|---|---|
-| `users.role` | `admin`, `manager`, `cashier`, `waiter`, `barista` |
-| `orders.order_type` | `dine_in`, `takeaway` |
-| `orders.status` | `open`, `paid`, `cancelled` |
-| `order_items.status` | `draft`, `pending`, `preparing`, `ready`, `served`, `cancelled` |
-| `payments.method` | `cash`, `transfer`, `card` |
+Xem các cột `ENUM` trong [docs/database-design.md](database-design.md), mục 3.
 
 ## 5. Quy trình đề xuất và phê duyệt thay đổi
 

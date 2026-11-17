@@ -31,7 +31,7 @@ SmartCoffee là phần mềm quản trị và POS cho một quán cà phê. Hùn
 2. File này.
 3. Phần **đã chốt** trong [docs/business-rules.md](docs/business-rules.md) và phần **đã phê duyệt** trong [docs/api-contract.md](docs/api-contract.md).
 4. Task Jira (mã `SC-n`).
-5. Hiện trạng triển khai: `database/smartcoffee_pos.sql`, code, báo cáo, bản nháp. Chỉ để tham khảo.
+5. Hiện trạng triển khai: `database/smartcoffee_v2.sql`, code, báo cáo, bản nháp. Chỉ để tham khảo.
 
 - Chỉ dẫn cấp thấp không được vượt qua chỉ dẫn cấp cao hơn.
 - Hai nguồn mâu thuẫn mà thứ tự trên không giải được: **dừng, nêu rõ mâu thuẫn, hỏi PM**. Không tự chọn.
