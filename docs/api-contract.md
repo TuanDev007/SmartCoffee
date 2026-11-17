@@ -6,7 +6,7 @@
 
 Nghiệp vụ nằm ở [business-rules.md](business-rules.md), không lặp lại ở đây.
 
-Tài liệu tách ba loại: **đã phê duyệt** (hiện gần như chưa có, xem mục 1), **hiện trạng triển khai** (schema trong SQL, mục 3 và 4) và **bản nháp chưa duyệt** (`docs/04-api.md`). SQL và bản nháp **không phải nguồn phê duyệt** nghiệp vụ hay hợp đồng.
+Tài liệu tách ba loại: **đã phê duyệt** (hiện gần như chưa có, xem mục 1), **hiện trạng triển khai** (schema trong SQL, mục 3 và 4) và **bản đề xuất chưa duyệt** (endpoint ghi rõ trạng thái "Đề xuất"). SQL và bản nháp **không phải nguồn phê duyệt** nghiệp vụ hay hợp đồng.
 
 ## 1. Endpoint API
 
@@ -25,7 +25,7 @@ Tài liệu tách ba loại: **đã phê duyệt** (hiện gần như chưa có,
 
 Định dạng JSON chung, mã lỗi, cách xác thực request: **Chưa được đặc tả**. Điều đã được PM chốt: backend trả JSON, frontend riêng (quyết định D-09) và đăng nhập bằng session PHP, không dùng JWT (D-02), xem nhật ký quyết định trong [business-rules.md](business-rules.md), mục 7.
 
-`docs/04-api.md` là bản nháp do AI soạn, **chưa được Hùng phê duyệt và không phải hợp đồng**. Không dùng làm căn cứ. File được giữ nguyên, chưa di chuyển, chưa xóa (xem mục 6).
+Đặc tả API viết ngay trong file này, theo từng đợt backend. Mỗi endpoint ghi trạng thái **Đề xuất** hoặc **Đã duyệt**. Chỉ endpoint **Đã duyệt** mới là hợp đồng (D-63). Bản nháp cũ `docs/04-api.md` (luồng cũ) đã xóa ngày 17/11.
 
 ## 2. Quy tắc tương thích frontend và backend
 
@@ -59,4 +59,4 @@ Xem các cột `ENUM` trong [docs/database-design.md](database-design.md), mục
 
 - Đặc tả các endpoint ở mục 1. Hiện toàn bộ là "Chưa được đặc tả".
 - Phê duyệt (hoặc yêu cầu sửa) schema ở mục 3 và 4 làm hợp đồng dữ liệu. Hiện chỉ là hiện trạng trong SQL.
-- `docs/04-api.md`: **giữ nguyên ở trạng thái bản nháp chưa phê duyệt, chưa di chuyển, chưa xóa** (quyết định D-21). Bước tiếp theo do Hùng quyết.
+- Duyệt đặc tả API từng đợt (D-63).

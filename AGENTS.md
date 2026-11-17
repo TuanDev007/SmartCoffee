@@ -23,7 +23,7 @@ SmartCoffee là phần mềm quản trị và POS cho một quán cà phê. Hùn
 | **Đề xuất** (kỹ thuật hoặc nghiệp vụ) | Do AI hoặc thành viên đưa ra, PM chưa duyệt | Chưa phải quy tắc nghiệp vụ |
 | **Hiện trạng triển khai** | Những gì đang có trong SQL, code, bản nháp, mô tả task | Chỉ cho biết đang có gì, **không phải căn cứ phê duyệt** |
 
-**Không được coi một điều là "đã chốt" chỉ vì nó có trong SQL, code, `docs/04-api.md`, mô tả task hay báo cáo.** Task phụ thuộc vào nội dung "Chờ PM duyệt" hoặc câu hỏi mở thì dừng và hỏi PM.
+**Không được coi một điều là "đã chốt" chỉ vì nó có trong SQL, code, bản nháp, mô tả task hay báo cáo.** Task phụ thuộc vào nội dung "Chờ PM duyệt" hoặc câu hỏi mở thì dừng và hỏi PM.
 
 ## 1. Thứ tự ưu tiên chỉ dẫn
 

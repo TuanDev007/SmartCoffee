@@ -131,7 +131,7 @@ Chuỗi chi nhánh, VAT, sổ quỹ hoặc kế toán, đặt bàn và phòng VI
 | Wireframe POS v1 (SC-4) | Tuấn Anh | Đã đóng | 155 màn theo **luồng cũ**. Chỉ dùng lại được một phần |
 | Thiết kế POS v2 theo luồng mới (SC-5) | Tuấn Anh | Mới giao 16/11, chưa có hạn | Làm lại luồng phục vụ, màn POS thu ngân, mở ca và kết ca, hủy và đổi món, voucher |
 | Cơ sở dữ liệu | Hùng | Có script cho luồng cũ, **phải sửa** | Thiếu ca làm, voucher, trạng thái bàn, đổi món, hoàn tiền, người thu tiền. Chưa được phê duyệt làm hợp đồng dữ liệu |
-| Hợp đồng API | Hùng | Chưa đặc tả | `docs/04-api.md` là bản nháp theo luồng cũ, chưa duyệt |
+| Hợp đồng API | Hùng | Chưa đặc tả | Viết vào `docs/api-contract.md` theo từng đợt, PM duyệt từng đợt (D-63) |
 | Backend | Hùng | Chưa bắt đầu | Mới có khung thư mục rỗng |
 | Frontend (code) | Tuấn Anh, Huy (dự kiến) | Chưa bắt đầu | Mới có khung thư mục rỗng; phân công chưa chốt |
 | Tài liệu | Hùng | Đang làm | `AGENTS.md`, `business-rules.md`, `api-contract.md` và file này chưa commit. Báo cáo `.docx` còn theo luồng cũ |

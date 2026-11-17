@@ -10,7 +10,7 @@
 
 Task phụ thuộc vào nội dung ở mục 3 hoặc mục 4 thì **dừng và hỏi PM**, không tự chốt theo SQL, code hay tài liệu nháp.
 
-**SQL, code, `docs/04-api.md`, mô tả task Jira và báo cáo nhóm không phải nguồn phê duyệt nghiệp vụ** (quyết định D-23). Căn cứ của từng quyết định ghi ở nhật ký quyết định, mục 7.
+**SQL, code, bản nháp, mô tả task Jira và báo cáo nhóm không phải nguồn phê duyệt nghiệp vụ** (quyết định D-23). Căn cứ của từng quyết định ghi ở nhật ký quyết định, mục 7.
 
 **Ngày 16/11/2026 PM đổi luồng bán hàng sang "thanh toán trước, pha sau"** (D-25 đến D-46). Nhiều quyết định trước đó bị thay thế, xem cột Trạng thái ở mục 7. SQL và wireframe POS v1 **chưa theo luồng mới** (mục 5).
 
@@ -117,7 +117,7 @@ Q-11 đã được PM chốt ngày 17/11 (D-62). Hiện không còn câu hỏi m
 
 - **`database/smartcoffee_pos.sql`:** đã thay bằng `database/smartcoffee_v2.sql` ngày 17/11 và xóa khỏi `main`. Ghi chú cũ: viết cho luồng cũ. Chưa có ca làm, voucher, trạng thái bàn lưu riêng, nhãn đổi món, khoản hoàn hoặc thu thêm, người thu tiền; còn trạng thái nháp, phương thức thẻ, cột giảm giá nhập tay, ràng buộc mỗi bàn một đơn đang mở. Thay đổi schema phải được PM phê duyệt.
 - **Wireframe POS v1 và mô tả SC-4:** theo luồng cũ. Task thay thế: SC-5.
-- **`docs/04-api.md`:** bản nháp chưa phê duyệt, theo luồng cũ. Xem [api-contract.md](api-contract.md).
+- **`docs/04-api.md`:** đã xóa ngày 17/11 (D-63). API viết vào [api-contract.md](api-contract.md).
 - **Báo cáo `.docx` và `.pdf`:** FR06, FR07, FR09, FR10 theo luồng cũ.
 - **`README.md`:** còn lặp mục nghiệp vụ theo luồng cũ và bảng phân công.
 
@@ -156,7 +156,7 @@ Chỉ ghi **Đã chốt** khi có lời của PM hoặc PM duyệt một nội d
 | D-18 | 14/11 | Nghiệp vụ | Manager không hủy được món đã mang ra | **Đã thay bằng D-30** | PM, 14/11 |
 | D-19 | 14/11 | Nghiệp vụ | Hủy cả đơn theo luồng cũ | **Đã thay bằng D-35** | PM, 14/11 |
 | D-20 | 15/11 | Nghiệp vụ | Không suy ra hủy đơn = hủy món đã mang ra | Hết hiệu lực do D-30, D-35 | PM review 15/11 |
-| D-21 | 14/11, 15/11 | Quy trình | AI không tự thiết kế API; `docs/04-api.md` giữ nguyên là bản nháp chưa phê duyệt | Đã chốt | PM |
+| D-21 | 14/11, 15/11 | Quy trình | AI không tự thiết kế API; `docs/04-api.md` giữ nguyên là bản nháp chưa phê duyệt | Thay bằng D-63 | PM |
 | D-22 | 14/11 | Quy trình | Chỉ PM phê duyệt thay đổi nghiệp vụ, API, database schema | Đã chốt | Task tái cấu trúc tài liệu của PM |
 | D-23 | 15/11 | Quy trình | SQL không phải nguồn phê duyệt nghiệp vụ | Đã chốt | PM review 15/11 |
 | D-24 | 14/11 | Kỹ thuật | Bản cũ chuyển vào `old-version/`, dựng cấu trúc thư mục mới | Đã chốt | PM: "Ok" |
@@ -198,5 +198,6 @@ Chỉ ghi **Đã chốt** khi có lời của PM hoặc PM duyệt một nội d
 | D-60 | 17/11 | Nghiệp vụ | Hủy, đổi một món trong đơn có voucher: hoàn hoặc tính chênh lệch theo giá món sau giảm | Đã chốt | PM, 17/11 20:58 |
 | D-61 | 17/11 | Nghiệp vụ | Thu ngân bán mang đi; phục vụ bán tại bàn và trả bàn | Đã chốt | PM, 17/11 20:58 |
 | D-62 | 17/11 | Nghiệp vụ | Khoản hoàn, thu thêm ghi theo cách thực tế đưa hoặc nhận tiền | Đã chốt | PM, 17/11 20:59 |
+| D-63 | 17/11 | Quy trình | Xóa `docs/04-api.md`. AI được viết đề xuất API vào `api-contract.md` theo từng đợt; chỉ endpoint PM duyệt mới là hợp đồng (thay D-21) | Đã chốt | PM, 17/11 21:18 |
 
 Ghi chú: không có mã D-27.
