@@ -11,7 +11,7 @@ Ký hiệu nguồn ở mỗi mục:
 ## 1. Nguyên tắc chung
 
 - MariaDB 10.4 (XAMPP), InnoDB, `utf8mb4`.
-- Tiền VND lưu số nguyên `INT UNSIGNED`, không có số lẻ [P-12].
+- Tiền VND lưu số nguyên `INT UNSIGNED`, không có số lẻ [D-64].
 - Mọi khóa chính là `id INT UNSIGNED AUTO_INCREMENT`.
 - Không xóa dữ liệu nghiệp vụ (đơn, món, giao dịch). Hủy là đổi trạng thái kèm người và lý do [D-29].
 - Thời gian lưu `DATETIME` giờ Việt Nam [ĐX].
@@ -55,7 +55,7 @@ Một dòng duy nhất: tên quán, địa chỉ, điện thoại, wifi, lời c
 | is_active | TINYINT(1) | Khóa tài khoản thay vì xóa |
 | created_at, updated_at | DATETIME | |
 
-Admin tạo tài khoản, không có đăng ký [P-02]. Vai trò lấy theo tài khoản, màn đăng nhập không chọn vai trò [P-03].
+Admin tạo tài khoản, không có đăng ký [D-64]. Vai trò lấy theo tài khoản, màn đăng nhập không chọn vai trò [D-64].
 
 ### 3.3 `categories`
 `name`, `sort_order`, `is_active`. Ví dụ: Cà phê, Trà.
@@ -132,6 +132,7 @@ Không có trần giảm, không có điều kiện đơn tối thiểu [D-57].
 | Cột | Kiểu | Ghi chú |
 |---|---|---|
 | code | VARCHAR(20) UNIQUE | Ví dụ SC-1611-001, hệ thống sinh [D-11] |
+| client_request_id | VARCHAR(64) NULL UNIQUE | Mã yêu cầu frontend gửi kèm khi thanh toán; gửi lại cùng mã thì không tạo đơn mới [D-66] |
 | order_type | ENUM('dine_in','takeaway') | Thu ngân bán `takeaway`, phục vụ bán `dine_in` [D-54, D-55, D-61] |
 | table_session_id | FK table_sessions NULL | NULL khi mang đi [D-55] |
 | shift_id | FK shifts NOT NULL | Không có ca thì không có đơn [D-38] |
@@ -150,14 +151,14 @@ CHECK: `dine_in` thì có `table_session_id`; `takeaway` thì không.
 Chuyển bàn, gộp bàn: đổi `table_session_id` của các đơn sang lượt khách của bàn đích, đóng lượt của bàn cũ. Các đơn vẫn riêng [D-34, D-42, D-53].
 
 ### 3.11 `order_items`
-Mỗi dòng là một món với một bộ tùy chỉnh [P-08].
+Mỗi dòng là một món với một bộ tùy chỉnh [D-64].
 
 | Cột | Kiểu | Ghi chú |
 |---|---|---|
 | order_id | FK orders | |
 | product_id | FK products | |
 | product_name | VARCHAR(100) | Chép tên lúc bán, đổi tên món sau này không ảnh hưởng hóa đơn cũ [ĐX] |
-| unit_price | INT UNSIGNED | Giá lúc bán [P-08] |
+| unit_price | INT UNSIGNED | Giá lúc bán [D-64] |
 | quantity | SMALLINT UNSIGNED | CHECK > 0 |
 | sweetness, bitterness | ENUM('less','normal','more') NULL | [D-56] |
 | ice | ENUM('none','less','normal','more') NULL | [D-56] |
@@ -165,7 +166,7 @@ Mỗi dòng là một món với một bộ tùy chỉnh [P-08].
 | status | ENUM('waiting','preparing','done','served','cancelled','replaced') | Chờ → Đang pha → Xong → Đã mang ra [P-06]; Đã hủy; Đổi món [D-29] |
 | replaces_item_id | FK order_items NULL | Món mới trong lần đổi món trỏ về món cũ [D-36] |
 | prepared_by | FK users NULL | Pha chế bấm Xong [D-12] |
-| served_by, served_at | NULL | Phục vụ bấm Đã mang ra [P-01] |
+| served_by, served_at | NULL | Phục vụ bấm Đã mang ra [D-64] |
 | cancelled_by, cancelled_at, cancel_reason | NULL | Dùng chung cho Đã hủy và Đổi món. CHECK: có đủ khi status là `cancelled` hoặc `replaced` [D-29] |
 | created_at, updated_at | DATETIME | |
 
@@ -181,7 +182,7 @@ Mỗi lần tiền đi vào hoặc đi ra là một dòng. Đây là chỗ trả
 | type | ENUM('payment','extra_charge','refund') | Thu lần đầu / thu thêm khi đổi món / hoàn [D-29, D-36, D-50] |
 | method | ENUM('cash','transfer') | Không có thẻ [D-39] |
 | amount | INT UNSIGNED | CHECK > 0 |
-| received_amount | INT UNSIGNED NULL | Tiền khách đưa (tiền mặt), để tính tiền thối [P-10] |
+| received_amount | INT UNSIGNED NULL | Tiền khách đưa (tiền mặt), để tính tiền thối [D-64] |
 | order_item_id | FK order_items NULL | Món liên quan khi hoàn hoặc thu thêm |
 | handled_by | FK users | Ai thu hoặc ai hoàn [D-33] |
 | reason | VARCHAR(255) NULL | Bắt buộc với `refund`, `extra_charge` (CHECK) |

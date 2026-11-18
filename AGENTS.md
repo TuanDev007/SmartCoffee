@@ -72,7 +72,7 @@ old-version/  Bản cũ, chỉ để tham khảo
 | Phân công thư mục | Chỉ PM |
 
 - Mọi thành viên và AI được **phát hiện vấn đề và đề xuất phương án**. Không được tự ý thay đổi nội dung đã duyệt, và không được tự chốt nội dung đang chờ duyệt.
-- Quy trình đề xuất thay đổi API và schema: xem [docs/api-contract.md](docs/api-contract.md), mục 5.
+- Quy trình đề xuất thay đổi API và schema: xem [docs/api-contract.md](docs/api-contract.md), mục 6.
 - Chưa có xác nhận rõ ràng của PM thì coi như chưa được phép.
 
 ### Mức độ tự chủ của AI

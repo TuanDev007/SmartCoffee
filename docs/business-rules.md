@@ -44,6 +44,10 @@ Bản đặc tả chức năng đầy đủ và tiến độ: [dac-ta-chuc-nang-
 - Quầy pha chế bấm **Xong** ngay trên thẻ món, không qua màn chi tiết (D-12).
 
 ### 2.3 Thanh toán và giảm giá
+- **Tiền mặt:** nhập tiền khách đưa, hệ thống tính tiền thối (D-64, từ P-10).
+- **Tiền VND lưu bằng số nguyên**, không có số lẻ (D-64, từ P-12).
+- **Mỗi món trong đơn lưu giá lúc bán**; đổi giá sau này không ảnh hưởng đơn cũ (D-64, từ P-08).
+- **Chống thanh toán trùng:** mỗi lần thanh toán gửi kèm một mã yêu cầu; gửi lại cùng mã thì không tạo đơn mới (D-66).
 - Phương thức thanh toán: **tiền mặt** và **chuyển khoản**. **Chưa phát triển thanh toán thẻ** (D-39).
 - **Mỗi đơn chỉ một phương thức.** Không trả nhiều phương thức trong một đơn (D-40).
 - **Khoản hoàn hoặc thu thêm ghi theo cách thực tế đưa hoặc nhận tiền** (tiền mặt hoặc chuyển khoản), không bắt buộc giống phương thức của đơn (D-62).
@@ -82,6 +86,11 @@ Bản đặc tả chức năng đầy đủ và tiến độ: [dac-ta-chuc-nang-
   - tiền mặt đầu ca và tiền mặt cuối ca;
   - tiền chuyển khoản, được hệ thống ghi nhận vào ca làm.
 
+### 2.6b Quyền chi tiết (D-64)
+- **Pha chế** xem hàng chờ và đổi trạng thái món; **phục vụ** xác nhận "Đã mang ra"; **manager** quản lý món, danh mục, khu vực, bàn (từ P-01; phần "xem báo cáo" của P-01 bỏ theo D-59).
+- **Không có đăng ký**; admin tạo tài khoản cho nhân viên (từ P-02).
+- **Màn đăng nhập không chọn vai trò**; vai trò lấy theo tài khoản (từ P-03).
+
 ### 2.7 Phạm vi bản 1
 - **Bản 1 không làm dashboard hay báo cáo cho manager.** Chỉ có tổng kết ca của thu ngân (D-59).
 
@@ -92,16 +101,10 @@ Bản đặc tả chức năng đầy đủ và tiến độ: [dac-ta-chuc-nang-
 
 Các điểm dưới đây đang có trong SQL, mô tả task hoặc báo cáo nhóm, chưa có quyết định riêng của PM. Ký hiệu nguồn: `SQL` = `database/smartcoffee_pos.sql` (bản cũ, đã xóa khỏi `main` ngày 17/11, còn trong lịch sử git); `SC-4` = mô tả task Jira SC-4; `BC` = báo cáo `docs/Bao-cao-SmartCoffee-Nhom-2.docx`. SQL, SC-4 và báo cáo được viết cho luồng cũ.
 
-- P-01. Quyền chi tiết còn lại: pha chế xem hàng chờ và đổi trạng thái món; phục vụ xác nhận "Đã mang ra"; manager quản lý món, bàn và xem báo cáo (SQL, SC-4, BC).
-- P-02. Không có đăng ký; admin tạo tài khoản cho nhân viên (SC-4, BC FR04).
-- P-03. Màn đăng nhập không có nút chọn vai trò, vai trò lấy theo tài khoản (SC-4).
 - P-05. Bộ trạng thái của đơn. SQL hiện có "đang mở, đã thanh toán, đã hủy", thiết kế cho luồng cũ.
 - P-06. Bộ trạng thái pha chế của món: Chờ → Đang pha → Xong → Đã mang ra (SQL, SC-4).
 - P-07. Hàng chờ quầy chỉ hiện món Chờ và Đang pha, vào trước xếp trước (SC-4, BC FR09).
-- P-08. Mỗi lần gọi một món là một dòng riêng; giá món lưu tại thời điểm gọi (SQL, BC).
-- P-10. Tiền mặt: nhập tiền khách đưa, hiện tiền thối (SC-4, BC FR10).
 - P-11. Mỗi đơn đã thanh toán có một hóa đơn; hóa đơn khổ 80 mm, có in và in lại, đếm số lần in (SQL, SC-4, BC FR11).
-- P-12. Tiền VND lưu bằng số nguyên (SQL, BC).
 - P-13. Danh sách chức năng FR01 đến FR13 trong báo cáo, mục 2.1. Chưa được PM duyệt lại theo luồng mới.
 - P-14. Khách không tự gọi món (SC-4, BC).
 
@@ -184,7 +187,7 @@ Chỉ ghi **Đã chốt** khi có lời của PM hoặc PM duyệt một nội d
 | D-47 | 16/11 | Nghiệp vụ | Thu ngân tự mở ca; mỗi lúc chỉ một ca mở | Đã chốt | PM, 16/11 15:49 |
 | D-48 | 16/11 | Nghiệp vụ | Voucher do manager tạo và tự cấu hình: phần trăm, số tiền, hạn, số lần | Đã chốt | PM, 16/11 15:49 |
 | D-49 | 16/11 | Nghiệp vụ | Tiền hoàn của đơn thuộc ca nào thì tính vào ca đó | Đã chốt | PM, 16/11 15:49 |
-| P-01 đến P-14 | | | Các điểm ở mục 3 | Chờ PM duyệt | Chỉ có trong SQL, SC-4, báo cáo |
+| P-01 đến P-14 | | | Các điểm ở mục 3 | Chờ PM duyệt | Chỉ có trong SQL, SC-4, báo cáo. P-01, P-02, P-03, P-08, P-10, P-12 đã duyệt (D-64) |
 | D-50 | 17/11 | Nghiệp vụ | Hủy cả đơn thì hoàn 100% tiền của đơn | Đã chốt | PM, 17/11 12:31 |
 | D-51 | 17/11 | Nghiệp vụ | Trả bàn không có điều kiện, phục vụ bấm khi dọn bàn | Đã chốt | PM, 17/11 12:31 |
 | D-52 | 17/11 | Nghiệp vụ | Hủy đơn, hoàn tiền chỉ thực hiện trong ca của đơn; phát sinh sau khi kết ca do vận hành hoặc chủ quán xử lý ngoài hệ thống | Đã chốt | PM, 17/11 12:31 |
@@ -198,6 +201,9 @@ Chỉ ghi **Đã chốt** khi có lời của PM hoặc PM duyệt một nội d
 | D-60 | 17/11 | Nghiệp vụ | Hủy, đổi một món trong đơn có voucher: hoàn hoặc tính chênh lệch theo giá món sau giảm | Đã chốt | PM, 17/11 20:58 |
 | D-61 | 17/11 | Nghiệp vụ | Thu ngân bán mang đi; phục vụ bán tại bàn và trả bàn | Đã chốt | PM, 17/11 20:58 |
 | D-62 | 17/11 | Nghiệp vụ | Khoản hoàn, thu thêm ghi theo cách thực tế đưa hoặc nhận tiền | Đã chốt | PM, 17/11 20:59 |
+| D-64 | 18/11 | Nghiệp vụ | Duyệt P-01 (trừ xem báo cáo, theo D-59), P-02, P-03, P-08, P-10, P-12 | Đã chốt | PM, 18/11 09:20 |
+| D-65 | 18/11 | API | Duyệt đặc tả API đợt 1 đến 5 trong api-contract.md | Đã chốt | PM, 18/11 09:20 |
+| D-66 | 18/11 | Schema | Thêm `orders.client_request_id` (UNIQUE) để chống thanh toán trùng | Đã chốt | PM, 18/11 09:20 |
 | D-63 | 17/11 | Quy trình | Xóa `docs/04-api.md`. AI được viết đề xuất API vào `api-contract.md` theo từng đợt; chỉ endpoint PM duyệt mới là hợp đồng (thay D-21) | Đã chốt | PM, 17/11 21:18 |
 
 Ghi chú: không có mã D-27.

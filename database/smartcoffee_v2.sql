@@ -153,6 +153,8 @@ CREATE TABLE vouchers (
 CREATE TABLE orders (
     id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     code              VARCHAR(20)  NOT NULL UNIQUE,
+    -- Chống thanh toán trùng (D-66). NULL chỉ ở dữ liệu mẫu; API luôn gửi.
+    client_request_id VARCHAR(64)  NULL UNIQUE,
     order_type        ENUM('dine_in', 'takeaway') NOT NULL,
     table_session_id  INT UNSIGNED NULL,
     shift_id          INT UNSIGNED NOT NULL,

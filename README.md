@@ -10,7 +10,7 @@ Thiết kế giao diện (Figma): https://www.figma.com/design/bOJYKAAD1MK3WMiRd
 
 | Phần | Trạng thái |
 |---|---|
-| Cơ sở dữ liệu (`database/smartcoffee_v2.sql`) | Đã có script 13 bảng theo luồng thanh toán trước, pha sau; chưa chạy thử |
+| Cơ sở dữ liệu (`database/smartcoffee_v2.sql`) | Đã có script 13 bảng theo luồng thanh toán trước, pha sau; đã chạy thử trên XAMPP ngày 17/11 |
 | Backend (`backend/`) | Chưa lập trình |
 | Frontend (`frontend/`) | Đang thiết kế wireframe, chưa lập trình |
 | Báo cáo (`docs/`) | Bản giai đoạn 1, đang cập nhật |
