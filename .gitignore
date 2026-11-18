@@ -6,3 +6,6 @@ node_modules/
 Thumbs.db
 .DS_Store
 ~$*
+
+# Cấu hình riêng từng máy (mật khẩu database)
+backend/config/config.php
