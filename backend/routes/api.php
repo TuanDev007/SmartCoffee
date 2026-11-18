@@ -13,6 +13,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
 use App\Controllers\MenuController;
 use App\Controllers\ProductController;
+use App\Controllers\ShiftController;
 use App\Controllers\TableController;
 use App\Controllers\UserController;
 
@@ -44,3 +45,10 @@ $router->post('/api/table-areas', [TableController::class, 'storeArea'], ['roles
 $router->patch('/api/table-areas/{id}', [TableController::class, 'updateArea'], ['roles' => ['manager']]);
 $router->post('/api/tables', [TableController::class, 'store'], ['roles' => ['manager']]);
 $router->patch('/api/tables/{id}', [TableController::class, 'update'], ['roles' => ['manager']]);
+
+// Đợt 4: Ca thu ngân
+$router->get('/api/shifts/current', [ShiftController::class, 'current'], ['roles' => ['manager', 'cashier', 'waiter', 'barista']]);
+$router->post('/api/shifts', [ShiftController::class, 'open'], ['roles' => ['cashier']]);
+$router->get('/api/shifts', [ShiftController::class, 'index'], ['roles' => ['cashier']]);
+$router->get('/api/shifts/{id}/summary', [ShiftController::class, 'summary'], ['roles' => ['cashier']]);
+$router->post('/api/shifts/{id}/close', [ShiftController::class, 'close'], ['roles' => ['cashier']]);
