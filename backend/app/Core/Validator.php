@@ -92,6 +92,38 @@ final class Validator
         return $this->data[$key];
     }
 
+    /** Số nguyên (không nhận chuỗi số, không nhận số lẻ). */
+    public function int(string $key, bool $required = false, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX): ?int
+    {
+        if (!$this->has($key) || $this->data[$key] === null) {
+            if ($required) {
+                $this->errors[$key] = 'Bắt buộc nhập.';
+            }
+            return null;
+        }
+        $value = $this->data[$key];
+        if (!is_int($value)) {
+            $this->errors[$key] = 'Phải là số nguyên.';
+            return null;
+        }
+        if ($value < $min) {
+            $this->errors[$key] = "Phải lớn hơn hoặc bằng {$min}.";
+        } elseif ($value > $max) {
+            $this->errors[$key] = "Phải nhỏ hơn hoặc bằng {$max}.";
+        }
+        return $value;
+    }
+
+    /** Chuỗi có thể để trống (null). Chuỗi rỗng sau khi cắt khoảng trắng coi như null. */
+    public function optionalString(string $key, int $max = 255): ?string
+    {
+        if (!$this->has($key) || $this->data[$key] === null) {
+            return null;
+        }
+        $value = $this->string($key, false, 0, $max);
+        return $value === '' ? null : $value;
+    }
+
     /** @param list<string> $allowed */
     public function enum(string $key, array $allowed, bool $required = false): ?string
     {

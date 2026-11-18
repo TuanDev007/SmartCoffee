@@ -108,7 +108,7 @@ final class User
             'is_active'  => (bool) $row['is_active'],
         ];
         if (isset($row['created_at'])) {
-            $out['created_at'] = (new \DateTimeImmutable((string) $row['created_at']))->format(DATE_ATOM);
+            $out['created_at'] = \App\Core\Format::datetime((string) $row['created_at']);
         }
         return $out;
     }
